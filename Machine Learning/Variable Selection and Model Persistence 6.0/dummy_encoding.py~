@@ -1,0 +1,31 @@
+"""
+This module contains code that's meant to introduce the learner to the
+concept of dummy encoding when dealing with data that's not numerical
+when it comes to machine learning models
+"""
+import pandas as pd
+
+pd.set_option('display.max_rows', None)
+pd.set_option('display.max_columns', None)
+
+data = {
+        'House_size': [80, 120, 150, 200, 100],
+        'Bedrooms': [2, 3, 4, 5, 3],
+        'House_type': [
+            'Apartment',
+            'Apartment',
+            'Villa',
+            'Villa',
+            'Townhouse'
+            ],
+        'Price': [180, 260, 350, 500, 230]
+        }
+
+df = pd.DataFrame(data)
+
+encoded_df = pd.get_dummies(
+        df,
+        columns=['House_type']
+        )
+
+print(encoded_df)

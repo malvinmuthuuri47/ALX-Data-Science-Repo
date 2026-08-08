@@ -1,0 +1,23 @@
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
+
+df = pd.DataFrame({
+    'study_hours': [2,3,4,5,6,7,8,9,10,11],
+    'exam_scores': [45,50,55,60,65,70,78,82,88,92]
+    })
+
+X = df[['study_hours']]
+y = df['exam_scores']
+
+model = LinearRegression()
+model.fit(X, y)
+
+y_predicted = model.predict(X)
+
+print('Actual values: ', y.values)
+print('Predicted values: ', y_predicted.round(2))
+
+r2 = r2_score(y, y_predicted)
+print(f'R²: {r2:.4f}')

@@ -1,0 +1,95 @@
+"""
+This module implements logic to connect to a SQLite3 database and remote CSV
+data sources
+"""
+from sqlalchemy import create_engine, text
+import logging
+import pandas as pd
+
+# Name our logger so we know that logs from this module come from the data_ingestion module
+logger = logging.getLogger('data_ingestion')
+# Set a basic logging message up that prints out a timestamp, the name of our logger, and the message
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+def create_db_engine(db_path):
+    """
+    Establishes a connection with the SQlite3 database provided
+    in the db_path argument
+    
+    Args:
+        db_path: The path to the database file
+        
+    Returns:
+        The engine object to connect to the database if successful,
+        an error message and a raised exception if unsuccessful
+    """
+    try:
+        engine = create_engine(db_path)
+        # Test connection
+        with engine.connect() as conn:
+            pass
+        # Test if the dataase engine was created successfully
+        logger.info("Database engine created successfully.")
+        return engine  # Return the engine object if it all works well
+    except ImportError:  # If we get an ImportError, inform the user SQLAlchemy is not installed
+        logger.error("SQLAlchemy is required to use this function. Please install it first.")
+        raise e
+    except Exception as e:  # If we failt to create an engine inform the user
+        logger.error(f"Failed to create database engine. Error: {e}")
+        raise e
+
+def query_data(engine, sql_query):
+    """
+    Connects to the database using the engine object returned by create_db_engine
+    and executes the sql_query passed on the database through the engine object
+    provided.
+    
+    Args:
+        engine: The engine object returned by create_db_engine() when executed
+                successfully
+        sql_query: The query to execute on the SQlite3 database
+    
+    Returns:
+        A Pandas DataFrame containing the data from the executed SQL query if
+        executed successfully, a logged error message and a raised exception
+        if unsuccessful
+    """
+    try:
+        with engine.connect() as connection:
+            df = pd.read_sql_query(text(sql_query), connection)
+        if df.empty:
+            # Log a message or handle the empty DataFrame scenario as needed
+            msg = "The query returned an empty DataFrame."
+            logger.error(msg)
+            raise ValueError(msg)
+        logger.info("Query executed successfully.")
+        return df
+    except ValueError as e:
+        logger.error(f"SQL query failed: Error: {e}")
+        raise e
+    except Exception as e:
+        logger.error(f"An error occurred while querying the database. Error: {e}")
+        raise e
+
+def read_from_web_CSV(URL):
+    """
+    Takes a remote URL, reads data from it and stores it in a Pandas Dataframe
+    if successful but raises an error and an exception if unsuccessful
+    
+    Args:
+        URL - The URL to the CSV files
+    
+    Returns:
+        A Pandas DataFrame containing the CSV content if successful, an error
+        and a raise exception otherwise
+    """
+    try:
+        df = pd.read_csv(URL)
+        logger.info("CVS file read successfully from the web.")
+        return df
+    except pd.errors.EmptyDataError as e:
+        logger.error("The URL does not point to a valid CVS file. Please check the URL and try again.")
+        raise e
+    except Exception as e:
+        logger.error(f"Failed to read CSV from the web. Error: {e}")
+        raise e

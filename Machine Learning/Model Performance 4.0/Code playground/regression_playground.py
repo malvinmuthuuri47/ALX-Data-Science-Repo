@@ -1,0 +1,65 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+
+df = pd.DataFrame({
+    'study_hours': [2,3,4,5,6,7,8,9,10,11],
+    'exam_scores': [45,50,55,60,65,70,78,82,88,92]
+    })
+
+X = df[['study_hours']]
+y = df['exam_scores']
+
+model = LinearRegression()
+model.fit(X, y)
+
+predictions = model.predict(X)
+
+fig, ax = plt.subplots(figsize=(10, 6))
+
+ax.scatter(
+        df['study_hours'], # x axis - feature column
+        df['exam_scores'], # y axis - response column
+        color='steelblue',
+        s=100,
+        alpha=0.8,
+        edgecolors='white',
+        linewidths=1.5,
+        label='Actual Data',
+        zorder=5
+        )
+
+ax.plot(
+        df['study_hours'], # same x axis values
+        predictions, # predicted y values from the model
+        color='red',
+        linewidth=2,
+        linestyle='--',
+        label=f'Regression Line'
+        )
+
+slope = model.coef_[0]
+intercept = model.intercept_
+r_squared = model.score(X, y)
+
+ax.set_title(
+        'Study Hours vs Exam Scores - Linear Regression',
+        fontsize=14, fontweight='bold', pad=15
+        )
+ax.set_xlabel('Study Hours', fontsize=12)
+ax.set_ylabel('Exam Scores', fontsize=12)
+ax.legend(fontsize=10)
+ax.grid(True, linestyle='--', alpha=0.4)
+
+# Add equation and R² as text on the chart
+ax.text(
+        2, 88,
+        f'y = {slope:.2f}x + {intercept:.2f}\nR² = {r_squared:.4f}',
+        fontsize=11,
+        color='red',
+        bbox=dict(facecolor='white', edgecolor='red', alpha=0.8)
+        )
+
+plt.tight_layout()
+plt.show()

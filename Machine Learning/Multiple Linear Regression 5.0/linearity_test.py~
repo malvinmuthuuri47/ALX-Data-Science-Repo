@@ -1,0 +1,32 @@
+"""
+This module shows how to evaluate the accuracy and reliability of the
+multiple linear regression model by checking for linearity between the
+dependent and independent variables using scatter plots
+"""
+import pandas as pd
+import matplotlib.pyplot as plt
+
+data = {
+        "House_size": [80, 100, 120, 150, 180, 200, 220],
+        "Bedrooms": [2, 3, 3, 4, 5, 5, 6],
+        "Age": [25, 18, 12, 8, 4, 2, 1],
+        "Distance": [15, 12, 10, 8, 5, 4, 3],
+        "Price": [180, 220, 260, 320, 410, 450, 500]
+        }
+
+df = pd.DataFrame(data)
+
+predictors = ["House_size", "Bedrooms", "Age", "Distance"]
+
+fig, axs = plt.subplots(2, 2, figsize=(12,8))
+
+axs = axs.flatten()
+
+for i, predictor in enumerate(predictors):
+    plt.figure(figsize=(6,4))
+    plt.scatter(df[predictor], df['Price'])
+    plt.title(f"{predictor} vs Price")
+    plt.xlabel(predictor)
+    plt.ylabel('Price')
+
+    plt.show()

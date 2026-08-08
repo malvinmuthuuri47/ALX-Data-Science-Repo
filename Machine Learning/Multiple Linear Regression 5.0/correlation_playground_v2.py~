@@ -1,0 +1,52 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from statsmodels.graphics.correlation import plot_corr
+
+df = pd.DataFrame({
+    'study_hours': [2,3,4,5,6,7,8,9,10,11],
+    'sleep_hours': [8,7,7,6,6,7,8,7,6,5],
+    'exam_scores': [45,50,55,60,65,70,78,82,88,92],
+    'stress_level': [8,7,6,6,5,4,4,3,3,2]
+    })
+
+print(df)
+
+corr_matrix = df.corr()
+
+plot_corr(
+        corr_matrix,
+        xnames=corr_matrix.columns.tolist(),
+        title='Correlation MAtrix - Student Performance',
+        normcolor=True,
+        cmap='RdBu_r'
+        )
+
+ax = plt.gca()
+
+x_min, x_max = ax.get_xlim()
+y_min, y_max = ax.get_ylim()
+
+cell_width = (x_max - x_min) / n
+cell_height = (y_max - y_min) / n
+
+n = len(corr_matrix)
+for i in range(n):
+    for j in range(n):
+
+        x_center = x_min + (j + 0.5) * cell_width
+        y_center = y_min + (i + 0.5) * cell_height
+
+        ax.text(
+                x_center,
+                y_center,
+                f'{corr_matrix.iloc[i, j]:.2f}',
+                ha='center',
+                va='center',
+                fontsize=11,
+                fontweight='bold',
+                color='white'
+                )
+
+plt.tight_layout()
+plt.show()

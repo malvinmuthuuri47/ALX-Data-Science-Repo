@@ -1,0 +1,23 @@
+"""
+This module contains Python code that's meant to showcase how variables can
+be selected for use in machine learning based on a concept called variance
+thresholding
+"""
+
+import pandas as pd
+from sklearn.feature_selection import VarianceThreshold
+
+data = {
+        "Age": [20, 25, 30, 35, 40],
+        "Income": [30000, 45000, 50000, 65000, 80000],
+        "Country_Code": [254, 254, 254, 254, 254],
+        "Owns_Smartphone": [1, 1, 1, 0, 1]
+        }
+
+df = pd.DataFrame(data)
+
+selector = VarianceThreshold(threshold=0.1)
+selected = selector.fit_transform(df)
+
+selected_columns = df.columns[selector.get_support()]
+print(selected_columns)

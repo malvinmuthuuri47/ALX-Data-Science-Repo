@@ -1,0 +1,42 @@
+"""
+This module contains code that depicts the concept of variance thresholding
+in machine learning models
+"""
+
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.feature_selection import VarianceThreshold
+
+data = {
+        'House_size': [80, 100, 120, 150, 180],
+        'Bedrooms': [2, 3, 3, 4, 5],
+        'Country_code': [254, 254, 254, 254, 254],
+        'Has_garage': [1, 1, 0, 1, 1]
+        }
+
+df = pd.DataFrame(data)
+
+# Normalizing data
+scaler = MinMaxScaler()
+
+scaled_data = scaler.fit_transform(df)
+
+df_scaled = pd.DataFrame(
+        scaled_data,
+        columns=df.columns
+        )
+
+selector = VarianceThreshold(threshold=0.03)
+
+selector.fit(df_scaled)
+
+selected_columns = df_scaled.columns[selector.get_support()]
+
+selected_data = selector.transform(df_scaled)
+
+selected_df = pd.DataFrame(
+        selected_Data,
+        columns=selected_columns
+        )
+
+print(selected_df)

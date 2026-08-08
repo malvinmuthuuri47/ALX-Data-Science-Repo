@@ -1,0 +1,64 @@
+"""
+This module contains the code that's meant to depict the concept of ridge
+regression in multiple linear regression.
+"""
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import Ridge
+from sklearn.metrics import mean_squared_error, r2_score
+
+# pd.set_option('display.max_rows', None)
+
+data = {
+        'Temperature': [22,24,26,28,30,32,34,36],
+        'Rainfall':[120,150,170,180,200,220,240,260],
+        'Fertilizer': [100,120,130,140,150,170,180,200],
+        'Soil_type': [
+            'Clay','Clay','Sandy','Sandy','Loam','Loam','Clay','Sandy'
+            ],
+        'Crop_yield': [3.2,3.6,4.0,4.3,4.8,5.1,5.4,5.8]
+        }
+
+df = pd.DataFrame(data)
+
+# Dummy encode the categorical features
+df = pd.get_dummies(df, columns=['Soil_type'], drop_first=True)
+
+
+# separate the predictors from the response
+X = df.drop('Crop_yield', axis=1)
+y = df['Crop_yield']
+
+# split the data
+X_train, X_test, y_train, y_test = train_test_split(
+        X,
+        y,
+        test_size=0.2,
+        random_state=42
+        )
+
+# Standardize the predictors
+scaler = StandardScaler()
+
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Create the Ridge Regression model
+ridge = Ridge(alpha=1.0)
+
+# Train the model
+ridge.fit(
+        X_train_scaled, y_train
+        )
+
+# Make predictions
+y_pred = ridge.predict(X_test_scaled)
+# print(y_pred)
+
+# Evaluate the model
+mse = mean_squared_error(y_test, y_pred)
+print('MSE:', mse)
+r2 = r2_score(y_test, y_pred)
+print('R² Score:', r2)

@@ -1,0 +1,43 @@
+"""
+This module contains the code that's meant to demonstrate the process
+of evaluating the accuracy and reliability of a multiple linear regression
+model
+"""
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
+
+# Dataset - predicting house prices
+df = pd.DataFrame({
+    'house_size': [50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240],
+    'num_bedrooms': [1,1,2,2,2,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6],
+    'house_age': [20,15,25,10,30,5,20,15,10,25,5,30,15,20,10,5,25,30,15,10],
+    'house_price': [150000,180000,210000,240000,265000,300000,320000,255000,375000,410000,440000,465000,495000,520000,550000,580000,605000,635000,660000,690000]
+    })
+
+# Define features and response variable
+independent_cols = ['house_size', 'num_bedrooms', 'house_age']
+dependent_col = 'house_price'
+
+X = df[independent_cols]
+y = df[dependent_col]
+
+X_train, X_test, y_train, y_test = train_test_split(
+        X, y,
+        test_size=0.2,
+        random_state=42
+        )
+
+# Add contant for intercept
+X_train_sm = sm.add_constant(X_train)
+X_test_sm = sm.add_constant(X_test)
+
+# Fit the OLS model
+model = sm.OLS(y_train, X_train_sm).fit()
+
+print(model.summary())
+print(f'R²: ', {model.rsquared:.4f})

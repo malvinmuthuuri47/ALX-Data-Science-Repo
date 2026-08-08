@@ -1,0 +1,39 @@
+"""
+This module provides an example for the learner to understand how
+to implement dummy encoding on a Pandas DataFrame
+"""
+import numpy as np
+import pandas as pd
+import statsmodels.api as sm
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
+
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_colwidth', None)
+
+df = pd.DataFrame({
+    'house_size':    [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240],
+    'neighbourhood': ['Rural', 'Rural', 'Suburban', 'Suburban', 'Rural', 'Urban', 'Urban', 'Suburban', 'Urban', 'Rural', 'Urban', 'Suburban', 'Urban', 'Urban', 'Suburban', 'Urban', 'Urban', 'Suburban', 'Urban', 'Urban'],
+    'house_condition': ['Poor', 'Fair', 'Good', 'Poor', 'Fair', 'Good', 'Excellent', 'Good', 'Excellent', 'Fair', 'Good', 'Excellent', 'Good', 'Excellent', 'Good', 'Excellent', 'Good', 'Excellent', 'Excellent', 'Good'],
+    'house_price':   [150000, 180000, 210000, 240000, 265000, 300000, 320000, 355000, 375000, 410000, 440000, 465000, 495000, 520000, 550000, 580000, 605000, 635000, 660000, 690000]
+})
+
+# Identify categorical and numeric columns from the dataset
+categorical_cols = df.select_dtypes(include=['object']).columns.tolist()
+numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
+
+# print(f'Categorical columns: {categorical_cols}')
+# print(f'Numeric columns: {numeric_cols}')
+
+for col in categorical_cols:
+    print(f'{col}: {df[col].unique()}')
+
+df_encoded = pd.get_dummies(
+        df,
+        columns=categorical_cols,
+        drop_first=True,
+        dtype=int
+        )
+
+print(df_encoded)
